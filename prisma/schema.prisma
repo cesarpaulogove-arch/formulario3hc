@@ -1,0 +1,32 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Formulario {
+  id                Int      @id @default(autoincrement())
+  nome              String
+  email             String?
+  telefone          String?
+  empresa           String?
+  cargo             String?
+  responsavel       String
+  primeiraImpressao String?
+  areasCriticas     String?
+  maiorDesafio      String?
+  servicosInteresse String?
+  proximoPasso      String?
+  mensagem          String?
+  createdAt         DateTime @default(now())
+}
+
+model Visita {
+  id        Int      @id @default(autoincrement())
+  visitante String?
+  pagina    String?
+  createdAt DateTime @default(now())
+}
