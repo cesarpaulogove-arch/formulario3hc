@@ -1,4 +1,6 @@
 
+"use client";
+
 import React from "react";
 import { FormularioData } from "./Formulario3HC";
 
@@ -9,12 +11,78 @@ interface Props {
     field: keyof FormularioData,
     value: string | string[]
   ) => void;
+
+  idioma?: "pt" | "en";
 }
 
 export default function PerfilVisitante({
   formData,
   updateField,
+  idioma = "pt",
 }: Props) {
+
+  const content = {
+    pt: {
+      title: "Identificação & Perfil",
+
+      nome: "Nome Completo *",
+      nomePlaceholder: "Seu nome",
+
+      empresa: "Empresa / Instituição *",
+      empresaPlaceholder: "Nome da organização",
+
+      responsavel: "Responsável 3HC *",
+      responsavelPlaceholder: "Selecione o responsável...",
+
+      cargo: "Cargo / Função",
+      cargoPlaceholder: "Selecione...",
+
+      contacto: "Contacto *",
+      contactoPlaceholder: "WhatsApp ou E-mail",
+
+      cargos: {
+        direcao: "Direção / Gestão",
+        tecnologia: "Tecnologia / TI",
+        tecnico: "Técnico / Engenharia",
+        financas: "Finanças / Negócios",
+        rh: "Recursos Humanos",
+        comunicacao: "Comunicação / Marketing",
+        outro: "Outro",
+      },
+    },
+
+    en: {
+      title: "Identification & Profile",
+
+      nome: "Full Name *",
+      nomePlaceholder: "Your name",
+
+      empresa: "Company / Institution *",
+      empresaPlaceholder: "Organization name",
+
+      responsavel: "3HC Representative *",
+      responsavelPlaceholder: "Select the representative...",
+
+      cargo: "Position / Role",
+      cargoPlaceholder: "Select...",
+
+      contacto: "Contact *",
+      contactoPlaceholder: "WhatsApp or Email",
+
+      cargos: {
+        direcao: "Management / Executive",
+        tecnologia: "Technology / IT",
+        tecnico: "Technical / Engineering",
+        financas: "Finance / Business",
+        rh: "Human Resources",
+        comunicacao: "Communication / Marketing",
+        outro: "Other",
+      },
+    },
+  };
+
+  const t = content[idioma];
+
   return (
     <section className="space-y-4">
 
@@ -28,7 +96,7 @@ export default function PerfilVisitante({
           1
         </span>
 
-        Identificação & Perfil
+        {t.title}
 
       </h2>
 
@@ -44,7 +112,7 @@ export default function PerfilVisitante({
         <div>
 
           <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
-            Nome Completo *
+            {t.nome}
           </label>
 
           <input
@@ -55,7 +123,7 @@ export default function PerfilVisitante({
               updateField("nome", e.target.value)
             }
             className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none text-sm transition"
-            placeholder="Seu nome"
+            placeholder={t.nomePlaceholder}
           />
 
         </div>
@@ -66,7 +134,7 @@ export default function PerfilVisitante({
         <div>
 
           <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
-            Empresa / Instituição *
+            {t.empresa}
           </label>
 
           <input
@@ -77,7 +145,7 @@ export default function PerfilVisitante({
               updateField("empresa", e.target.value)
             }
             className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none text-sm transition"
-            placeholder="Nome da organização"
+            placeholder={t.empresaPlaceholder}
           />
 
         </div>
@@ -92,7 +160,7 @@ export default function PerfilVisitante({
       <div>
 
         <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
-          Responsável 3HC *
+          {t.responsavel}
         </label>
 
         <select
@@ -108,7 +176,7 @@ export default function PerfilVisitante({
         >
 
           <option value="">
-            Selecione o responsável...
+            {t.responsavelPlaceholder}
           </option>
 
           <option value="Humberto Heliotrope">
@@ -143,7 +211,7 @@ export default function PerfilVisitante({
         <div>
 
           <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
-            Cargo / Função
+            {t.cargo}
           </label>
 
           <select
@@ -158,35 +226,35 @@ export default function PerfilVisitante({
           >
 
             <option value="">
-              Selecione...
+              {t.cargoPlaceholder}
             </option>
 
             <option value="Direcao / Gestao">
-              Direção / Gestão
+              {t.cargos.direcao}
             </option>
 
             <option value="Tecnologia / TI">
-              Tecnologia / TI
+              {t.cargos.tecnologia}
             </option>
 
             <option value="Tecnico / Engenharia">
-              Técnico / Engenharia
+              {t.cargos.tecnico}
             </option>
 
             <option value="Financas / Negocios">
-              Finanças / Negócios
+              {t.cargos.financas}
             </option>
 
             <option value="Recursos Humanos">
-              Recursos Humanos
+              {t.cargos.rh}
             </option>
 
             <option value="Comunicacao / Marketing">
-              Comunicação / Marketing
+              {t.cargos.comunicacao}
             </option>
 
             <option value="Outro">
-              Outro
+              {t.cargos.outro}
             </option>
 
           </select>
@@ -199,7 +267,7 @@ export default function PerfilVisitante({
         <div>
 
           <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
-            Contacto *
+            {t.contacto}
           </label>
 
           <input
@@ -213,7 +281,7 @@ export default function PerfilVisitante({
               )
             }
             className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none text-sm transition"
-            placeholder="WhatsApp ou E-mail"
+            placeholder={t.contactoPlaceholder}
           />
 
         </div>

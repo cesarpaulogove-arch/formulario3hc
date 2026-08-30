@@ -2,15 +2,82 @@
 
 import React from "react";
 import Image from "next/image";
-import { LockKeyhole } from "lucide-react";
+import {
+  LockKeyhole,
+  Languages,
+} from "lucide-react";
+
+import { Idioma } from "./Formulario3HC";
 
 interface FormularioHeaderProps {
   onPrivado?: () => void;
+  idioma: Idioma;
+  onIdiomaChange: (idioma: Idioma) => void;
 }
 
 export default function FormularioHeader({
   onPrivado,
+  idioma,
+  onIdiomaChange,
 }: FormularioHeaderProps) {
+
+  const content = {
+    pt: {
+      lema: "Lema FACIM 2026",
+      lemaTexto:
+        "Transformação Digital e Energética Rumo a uma Economia Sustentável",
+
+      titulo:
+        "Inquérito 3HC Soluções Inteligentes",
+
+      descricao:
+        "Ajude-nos a compreender os desafios e oportunidades da sua organização preenchendo este formulário.",
+
+      areas: "Áreas de atuação",
+
+      consultoria:
+        "Consultoria Corporativa",
+
+      assistencia:
+        "Assistência Técnica",
+
+      solucoes:
+        "Soluções Inteligentes",
+
+      privado:
+        "Área Privada",
+    },
+
+    en: {
+      lema: "FACIM 2026 Theme",
+
+      lemaTexto:
+        "Digital and Energy Transformation Towards a Sustainable Economy",
+
+      titulo:
+        "3HC Smart Solutions Survey",
+
+      descricao:
+        "Help us understand your organization's challenges and opportunities by completing this form.",
+
+      areas: "Areas of Expertise",
+
+      consultoria:
+        "Corporate Consulting",
+
+      assistencia:
+        "Technical Assistance",
+
+      solucoes:
+        "Smart Solutions",
+
+      privado:
+        "Private Area",
+    },
+  };
+
+  const t = content[idioma];
+
   return (
     <header className="relative overflow-hidden text-white">
 
@@ -26,16 +93,15 @@ export default function FormularioHeader({
         className="object-cover object-center"
       />
 
+
       {/* =====================================================
-          CAMADA SOBRE A IMAGEM
-          Mais transparente para deixar a imagem visível
+          SOBREPOSIÇÃO
       ===================================================== */}
 
-      <div className="absolute inset-0 bg-emerald-950/55" />
+      <div className="absolute inset-0 bg-emerald-950/50" />
 
-      {/* Leve tonalidade verde */}
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/25 via-teal-800/15 to-emerald-950/35" />
 
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/30 via-teal-800/20 to-emerald-950/40" />
 
       {/* =====================================================
           ELEMENTOS DECORATIVOS
@@ -136,12 +202,11 @@ export default function FormularioHeader({
         >
 
           <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-emerald-200">
-            Lema FACIM 2026
+            {t.lema}
           </p>
 
           <p className="mt-1.5 text-sm sm:text-base font-semibold text-white leading-relaxed">
-            Transformação Digital e Energética Rumo a uma
-            Economia Sustentável
+            {t.lemaTexto}
           </p>
 
         </div>
@@ -156,12 +221,11 @@ export default function FormularioHeader({
           <div className="w-12 h-1 rounded-full bg-emerald-300 mx-auto mb-4" />
 
           <h1 className="text-xl sm:text-2xl font-bold text-white">
-            Inquérito 3HC Soluções Inteligentes
+            {t.titulo}
           </h1>
 
           <p className="mt-2 text-sm sm:text-base leading-relaxed text-white/90">
-            Ajude-nos a compreender os desafios e oportunidades
-            da sua organização preenchendo este formulário.
+            {t.descricao}
           </p>
 
         </div>
@@ -169,7 +233,6 @@ export default function FormularioHeader({
 
         {/* =====================================================
             ÁREAS DE ATUAÇÃO
-            BLOCO DESTACADO
         ===================================================== */}
 
         <div
@@ -178,12 +241,10 @@ export default function FormularioHeader({
             max-w-4xl
             mx-auto
             rounded-2xl
-            border
-            border-emerald-300/30
+            border border-emerald-300/30
             bg-emerald-950/70
             backdrop-blur-md
-            px-4
-            py-5
+            px-4 py-5
             shadow-2xl
           "
         >
@@ -199,66 +260,57 @@ export default function FormularioHeader({
               mb-4
             "
           >
-            Áreas de atuação
+            {t.areas}
           </p>
 
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 
-            {/* CONSULTORIA */}
-
             <div
               className="
                 rounded-xl
                 bg-white
                 text-emerald-900
-                px-4
-                py-3
+                px-4 py-3
                 text-center
                 text-sm
                 font-bold
                 shadow-lg
               "
             >
-              Consultoria Corporativa
+              {t.consultoria}
             </div>
 
 
-            {/* ASSISTÊNCIA */}
-
             <div
               className="
                 rounded-xl
                 bg-white
                 text-emerald-900
-                px-4
-                py-3
+                px-4 py-3
                 text-center
                 text-sm
                 font-bold
                 shadow-lg
               "
             >
-              Assistência Técnica
+              {t.assistencia}
             </div>
 
 
-            {/* SOLUÇÕES */}
-
             <div
               className="
                 rounded-xl
                 bg-white
                 text-emerald-900
-                px-4
-                py-3
+                px-4 py-3
                 text-center
                 text-sm
                 font-bold
                 shadow-lg
               "
             >
-              Soluções Inteligentes
+              {t.solucoes}
             </div>
 
           </div>
@@ -267,13 +319,58 @@ export default function FormularioHeader({
 
 
         {/* =====================================================
-            ÁREA PRIVADA
-            CANTO INFERIOR DIREITO
+            CONTROLOS
         ===================================================== */}
 
-        {onPrivado && (
-          <div className="flex justify-end mt-5">
+        <div className="flex justify-end items-center gap-2 mt-5">
 
+
+          {/* =================================================
+              IDIOMA
+          ================================================= */}
+
+          <button
+            type="button"
+            onClick={() =>
+              onIdiomaChange(
+                idioma === "pt"
+                  ? "en"
+                  : "pt"
+              )
+            }
+            className="
+              flex
+              items-center
+              gap-2
+              px-3
+              py-2.5
+              rounded-xl
+              bg-black/25
+              hover:bg-black/40
+              border border-white/25
+              backdrop-blur-md
+              transition
+              text-xs
+              font-bold
+              shadow-lg
+            "
+            aria-label="Alterar idioma"
+          >
+
+            <Languages size={15} />
+
+            {idioma === "pt"
+              ? "EN"
+              : "PT"}
+
+          </button>
+
+
+          {/* =================================================
+              ÁREA PRIVADA
+          ================================================= */}
+
+          {onPrivado && (
             <button
               type="button"
               onClick={onPrivado}
@@ -298,13 +395,13 @@ export default function FormularioHeader({
               <LockKeyhole size={16} />
 
               <span>
-                Área Privada
+                {t.privado}
               </span>
 
             </button>
+          )}
 
-          </div>
-        )}
+        </div>
 
       </div>
 
@@ -313,9 +410,17 @@ export default function FormularioHeader({
           LINHA INFERIOR
       ===================================================== */}
 
-      <div className="relative h-1 bg-gradient-to-r from-emerald-300 via-white/70 to-teal-300" />
+      <div
+        className="
+          relative
+          h-1
+          bg-gradient-to-r
+          from-emerald-300
+          via-white/70
+          to-teal-300
+        "
+      />
 
     </header>
   );
 }
-

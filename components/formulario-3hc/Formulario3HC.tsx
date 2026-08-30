@@ -11,6 +11,8 @@ import FormularioSucesso from "./FormularioSucesso";
 import TabelaRegistos3HC from "./TabelaRegistos3HC";
 import LoginPrivado from "./LoginPrivado";
 
+export type Idioma = "pt" | "en";
+
 export interface FormularioData {
   nome: string;
   empresa: string;
@@ -37,32 +39,62 @@ const initialFormData: FormularioData = {
   proximoPasso: "",
 };
 
-
-
 export default function Formulario3HC() {
+
   // =====================================================
   // ESTADOS
   // =====================================================
 
-  const [submitted, setSubmitted] =
-    useState(false);
+  const [idioma, setIdioma] = useState<Idioma>("pt");
 
-  const [enviando, setEnviando] =
-    useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const [erro, setErro] =
-    useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  const [mostrarLogin, setMostrarLogin] =
-    useState(false);
+  const [erro, setErro] = useState("");
+
+  const [mostrarLogin, setMostrarLogin] = useState(false);
 
   const [privadoAutenticado, setPrivadoAutenticado] =
     useState(false);
 
   const [formData, setFormData] =
-    useState<FormularioData>(
-      initialFormData
-    );
+    useState<FormularioData>(initialFormData);
+
+
+  // =====================================================
+  // TRADUÇÕES PRINCIPAIS
+  // =====================================================
+
+  const textos = {
+    pt: {
+      erroEnvio: "Não foi possível enviar:",
+      enviar: "Enviar Resposta",
+      enviando: "A enviar...",
+      privacidade:
+        "Os seus dados estão protegidos e serão utilizados exclusivamente pela 3HC.",
+    },
+
+    en: {
+      erroEnvio: "Unable to submit:",
+      enviar: "Submit Response",
+      enviando: "Submitting...",
+      privacidade:
+        "Your data is protected and will be used exclusively by 3HC.",
+    },
+  };
+
+  const t = textos[idioma];
+
+
+  // =====================================================
+  // ALTERAR IDIOMA
+  // =====================================================
+
+  const alterarIdioma = (novoIdioma: Idioma) => {
+    setIdioma(novoIdioma);
+  };
+
 
   // =====================================================
   // ATUALIZAR CAMPOS
@@ -78,37 +110,31 @@ export default function Formulario3HC() {
     }));
   };
 
+
   // =====================================================
   // CHECKBOX
   // =====================================================
 
   const toggleCheckbox = (
-    field:
-      | "areasCriticas"
-      | "servicosInteresse",
+    field: "areasCriticas" | "servicosInteresse",
     option: string
   ) => {
     setFormData((prev) => {
+
       const current = prev[field];
 
-      const exists =
-        current.includes(option);
+      const exists = current.includes(option);
 
       return {
         ...prev,
 
         [field]: exists
-          ? current.filter(
-              (item) =>
-                item !== option
-            )
-          : [
-              ...current,
-              option,
-            ],
+          ? current.filter((item) => item !== option)
+          : [...current, option],
       };
     });
   };
+
 
   // =====================================================
   // ENVIAR FORMULÁRIO
@@ -117,6 +143,7 @@ export default function Formulario3HC() {
   const handleSubmit = async (
     e: React.FormEvent
   ) => {
+
     e.preventDefault();
 
     if (enviando) return;
@@ -125,18 +152,11 @@ export default function Formulario3HC() {
     setErro("");
 
     try {
-      // =================================================
-      // MOSTRAR DADOS ENVIADOS NO CONSOLE
-      // =================================================
 
       console.log(
         "📤 Enviando formulário:",
         formData
       );
-
-      // =================================================
-      // ENVIAR PARA API
-      // =================================================
 
       const response = await fetch(
         "/api/formularios",
@@ -144,22 +164,14 @@ export default function Formulario3HC() {
           method: "POST",
 
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
 
-          body: JSON.stringify(
-            formData
-          ),
+          body: JSON.stringify(formData),
         }
       );
 
-      // =================================================
-      // LER RESPOSTA DA API
-      // =================================================
-
-      const texto =
-        await response.text();
+      const texto = await response.text();
 
       console.log(
         "📥 Status da API:",
@@ -171,10 +183,6 @@ export default function Formulario3HC() {
         texto
       );
 
-      // =================================================
-      // CONVERTER RESPOSTA PARA JSON
-      // =================================================
-
       let resultado: any = null;
 
       try {
@@ -185,25 +193,16 @@ export default function Formulario3HC() {
         resultado = null;
       }
 
-      // =================================================
-      // VERIFICAR ERRO
-      // =================================================
-
       if (!response.ok) {
+
         const mensagem =
           resultado?.details ||
           resultado?.error ||
           texto ||
           `Erro HTTP ${response.status}`;
 
-        throw new Error(
-          mensagem
-        );
+        throw new Error(mensagem);
       }
-
-      // =================================================
-      // SUCESSO
-      // =================================================
 
       console.log(
         "✅ Formulário registado:",
@@ -211,10 +210,8 @@ export default function Formulario3HC() {
       );
 
       setSubmitted(true);
+
     } catch (error) {
-      // =================================================
-      // MOSTRAR ERRO
-      // =================================================
 
       console.error(
         "❌ ERRO AO ENVIAR FORMULÁRIO:",
@@ -224,16 +221,21 @@ export default function Formulario3HC() {
       const mensagem =
         error instanceof Error
           ? error.message
-          : "Ocorreu um erro ao enviar o formulário.";
+          : idioma === "pt"
+            ? "Ocorreu um erro ao enviar o formulário."
+            : "An error occurred while submitting the form.";
 
       setErro(mensagem);
+
     } finally {
+
       setEnviando(false);
     }
   };
 
+
   // =====================================================
-  // ABRIR LOGIN PRIVADO
+  // LOGIN PRIVADO
   // =====================================================
 
   const abrirPrivado = () => {
@@ -241,36 +243,35 @@ export default function Formulario3HC() {
     setErro("");
   };
 
-  // =====================================================
-  // FECHAR LOGIN
-  // =====================================================
 
   const fecharPrivado = () => {
     setMostrarLogin(false);
   };
 
-  // =====================================================
-  // LOGIN REALIZADO
-  // =====================================================
 
   const loginSucesso = () => {
     setMostrarLogin(false);
     setPrivadoAutenticado(true);
   };
 
+
   // =====================================================
   // TERMINAR SESSÃO
   // =====================================================
 
   const sairPrivado = async () => {
+
     try {
+
       await fetch(
         "/api/auth/logout",
         {
           method: "POST",
         }
       );
+
     } catch (error) {
+
       console.error(
         "Erro ao terminar sessão:",
         error
@@ -280,12 +281,15 @@ export default function Formulario3HC() {
     setPrivadoAutenticado(false);
   };
 
+
   // =====================================================
   // RESET
   // =====================================================
 
   const resetForm = () => {
+
     setSubmitted(false);
+
     setErro("");
 
     setFormData({
@@ -293,33 +297,43 @@ export default function Formulario3HC() {
     });
   };
 
+
   // =====================================================
   // ÁREA PRIVADA
   // =====================================================
 
   if (privadoAutenticado) {
+
     return (
       <main className="min-h-screen bg-slate-950 p-4 sm:p-6">
+
         <div className="max-w-7xl mx-auto">
+
           <TabelaRegistos3HC
             onLogout={sairPrivado}
           />
+
         </div>
+
       </main>
     );
   }
+
 
   // =====================================================
   // FORMULÁRIO ENVIADO
   // =====================================================
 
   if (submitted) {
+
     return (
       <FormularioSucesso
         onReset={resetForm}
+        idioma={idioma}
       />
     );
   }
+
 
   // =====================================================
   // FORMULÁRIO PÚBLICO
@@ -327,7 +341,9 @@ export default function Formulario3HC() {
 
   return (
     <>
+
       <main className="min-h-screen bg-slate-950 py-10 px-4 text-slate-800 font-sans">
+
         <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-800">
 
           {/* =================================================
@@ -336,7 +352,10 @@ export default function Formulario3HC() {
 
           <FormularioHeader
             onPrivado={abrirPrivado}
+            idioma={idioma}
+            onIdiomaChange={alterarIdioma}
           />
+
 
           {/* =================================================
               FORMULÁRIO
@@ -347,90 +366,118 @@ export default function Formulario3HC() {
             className="p-6 sm:p-8 space-y-8"
           >
 
-            {/* =================================================
-                PERFIL
-            ================================================= */}
+            {/* PERFIL */}
 
             <PerfilVisitante
               formData={formData}
               updateField={updateField}
+              idioma={idioma}
             />
 
-            {/* =================================================
-                NECESSIDADES
-            ================================================= */}
+
+            {/* NECESSIDADES */}
 
             <PerfilNecessidades
               formData={formData}
               updateField={updateField}
-              toggleCheckbox={
-                toggleCheckbox
-              }
+              toggleCheckbox={toggleCheckbox}
+              idioma={idioma}
             />
 
-            {/* =================================================
-                OPORTUNIDADES
-            ================================================= */}
+
+            {/* OPORTUNIDADES */}
 
             <ConexaoOportunidades
               formData={formData}
               updateField={updateField}
+              idioma={idioma}
             />
 
-            {/* =================================================
-                ERRO
-            ================================================= */}
+
+            {/* ERRO */}
 
             {erro && (
+
               <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+
                 <strong className="block mb-1">
-                  Não foi possível enviar:
+                  {t.erroEnvio}
                 </strong>
 
                 <span>
                   {erro}
                 </span>
+
               </div>
+
             )}
 
-            {/* =================================================
-                ENVIAR
-            ================================================= */}
+
+            {/* ENVIAR */}
 
             <button
               type="submit"
               disabled={enviando}
-              className="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-2xl shadow-xl shadow-emerald-600/20 transition flex items-center justify-center gap-2 text-base uppercase tracking-wider"
+              className="
+                w-full
+                py-4
+                bg-gradient-to-r
+                from-emerald-600
+                to-teal-600
+                hover:from-emerald-700
+                hover:to-teal-700
+                disabled:opacity-60
+                disabled:cursor-not-allowed
+                text-white
+                font-bold
+                rounded-2xl
+                shadow-xl
+                shadow-emerald-600/20
+                transition
+                flex
+                items-center
+                justify-center
+                gap-2
+                text-base
+                uppercase
+                tracking-wider
+              "
             >
+
               {enviando
-                ? "A enviar..."
-                : "Enviar Resposta"}
+                ? t.enviando
+                : t.enviar}
+
             </button>
 
-            {/* =================================================
-                PRIVACIDADE
-            ================================================= */}
+
+            {/* PRIVACIDADE */}
 
             <p className="text-center text-xs text-slate-400">
-              Os seus dados estão protegidos
-              e serão utilizados exclusivamente
-              pela 3HC.
+              {t.privacidade}
             </p>
 
           </form>
+
         </div>
+
       </main>
+
 
       {/* =================================================
           LOGIN PRIVADO
       ================================================= */}
 
       {mostrarLogin && (
+
         <LoginPrivado
           onClose={fecharPrivado}
           onSuccess={loginSucesso}
+          idioma={idioma}
         />
+
       )}
+
     </>
   );
 }
