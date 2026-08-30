@@ -203,7 +203,6 @@ export default function Formulario3HC() {
       );
 
       setSubmitted(true);
-
     } catch (error) {
       console.error(
         "❌ ERRO AO ENVIAR FORMULÁRIO:",
@@ -216,7 +215,6 @@ export default function Formulario3HC() {
           : t.erroGenerico;
 
       setErro(mensagem);
-
     } finally {
       setEnviando(false);
     }
@@ -301,7 +299,6 @@ export default function Formulario3HC() {
     return (
       <FormularioSucesso
         onReset={resetForm}
-        idioma={idioma}
       />
     );
   }
@@ -430,9 +427,7 @@ export default function Formulario3HC() {
             </p>
 
           </form>
-
         </div>
-
       </main>
 
       {/* =====================================================
@@ -443,9 +438,9 @@ export default function Formulario3HC() {
         <LoginPrivado
           onClose={fecharPrivado}
           onSuccess={loginSucesso}
-          idioma={idioma}
         />
       )}
     </>
   );
 }
+
