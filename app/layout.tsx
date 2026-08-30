@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "3hc inquerito",
-  description: "FACIM 2026-Transformação Digital e Energética Rumo a uma Economia Sustentável",
+  title: "3HC inquerito",
+  description: "FACIM 2026:Transformação Digital e Energética Rumo a uma Economia Sustentável",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
