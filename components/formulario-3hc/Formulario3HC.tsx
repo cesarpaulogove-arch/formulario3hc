@@ -40,7 +40,6 @@ const initialFormData: FormularioData = {
 };
 
 export default function Formulario3HC() {
-
   // =====================================================
   // ESTADOS
   // =====================================================
@@ -61,7 +60,6 @@ export default function Formulario3HC() {
   const [formData, setFormData] =
     useState<FormularioData>(initialFormData);
 
-
   // =====================================================
   // TRADUÇÕES PRINCIPAIS
   // =====================================================
@@ -73,6 +71,8 @@ export default function Formulario3HC() {
       enviando: "A enviar...",
       privacidade:
         "Os seus dados estão protegidos e serão utilizados exclusivamente pela 3HC.",
+      erroGenerico:
+        "Ocorreu um erro ao enviar o formulário.",
     },
 
     en: {
@@ -81,11 +81,12 @@ export default function Formulario3HC() {
       enviando: "Submitting...",
       privacidade:
         "Your data is protected and will be used exclusively by 3HC.",
+      erroGenerico:
+        "An error occurred while submitting the form.",
     },
   };
 
   const t = textos[idioma];
-
 
   // =====================================================
   // ALTERAR IDIOMA
@@ -94,7 +95,6 @@ export default function Formulario3HC() {
   const alterarIdioma = (novoIdioma: Idioma) => {
     setIdioma(novoIdioma);
   };
-
 
   // =====================================================
   // ATUALIZAR CAMPOS
@@ -110,7 +110,6 @@ export default function Formulario3HC() {
     }));
   };
 
-
   // =====================================================
   // CHECKBOX
   // =====================================================
@@ -120,14 +119,12 @@ export default function Formulario3HC() {
     option: string
   ) => {
     setFormData((prev) => {
-
       const current = prev[field];
 
       const exists = current.includes(option);
 
       return {
         ...prev,
-
         [field]: exists
           ? current.filter((item) => item !== option)
           : [...current, option],
@@ -135,15 +132,13 @@ export default function Formulario3HC() {
     });
   };
 
-
   // =====================================================
   // ENVIAR FORMULÁRIO
   // =====================================================
 
   const handleSubmit = async (
-    e: React.FormEvent
+    e: React.FormEvent<HTMLFormElement>
   ) => {
-
     e.preventDefault();
 
     if (enviando) return;
@@ -152,7 +147,6 @@ export default function Formulario3HC() {
     setErro("");
 
     try {
-
       console.log(
         "📤 Enviando formulário:",
         formData
@@ -194,7 +188,6 @@ export default function Formulario3HC() {
       }
 
       if (!response.ok) {
-
         const mensagem =
           resultado?.details ||
           resultado?.error ||
@@ -212,7 +205,6 @@ export default function Formulario3HC() {
       setSubmitted(true);
 
     } catch (error) {
-
       console.error(
         "❌ ERRO AO ENVIAR FORMULÁRIO:",
         error
@@ -221,18 +213,14 @@ export default function Formulario3HC() {
       const mensagem =
         error instanceof Error
           ? error.message
-          : idioma === "pt"
-            ? "Ocorreu um erro ao enviar o formulário."
-            : "An error occurred while submitting the form.";
+          : t.erroGenerico;
 
       setErro(mensagem);
 
     } finally {
-
       setEnviando(false);
     }
   };
-
 
   // =====================================================
   // LOGIN PRIVADO
@@ -243,35 +231,28 @@ export default function Formulario3HC() {
     setErro("");
   };
 
-
   const fecharPrivado = () => {
     setMostrarLogin(false);
   };
-
 
   const loginSucesso = () => {
     setMostrarLogin(false);
     setPrivadoAutenticado(true);
   };
 
-
   // =====================================================
   // TERMINAR SESSÃO
   // =====================================================
 
   const sairPrivado = async () => {
-
     try {
-
       await fetch(
         "/api/auth/logout",
         {
           method: "POST",
         }
       );
-
     } catch (error) {
-
       console.error(
         "Erro ao terminar sessão:",
         error
@@ -281,15 +262,12 @@ export default function Formulario3HC() {
     setPrivadoAutenticado(false);
   };
 
-
   // =====================================================
   // RESET
   // =====================================================
 
   const resetForm = () => {
-
     setSubmitted(false);
-
     setErro("");
 
     setFormData({
@@ -297,16 +275,13 @@ export default function Formulario3HC() {
     });
   };
 
-
   // =====================================================
   // ÁREA PRIVADA
   // =====================================================
 
   if (privadoAutenticado) {
-
     return (
       <main className="min-h-screen bg-slate-950 p-4 sm:p-6">
-
         <div className="max-w-7xl mx-auto">
 
           <TabelaRegistos3HC
@@ -314,18 +289,15 @@ export default function Formulario3HC() {
           />
 
         </div>
-
       </main>
     );
   }
-
 
   // =====================================================
   // FORMULÁRIO ENVIADO
   // =====================================================
 
   if (submitted) {
-
     return (
       <FormularioSucesso
         onReset={resetForm}
@@ -334,14 +306,12 @@ export default function Formulario3HC() {
     );
   }
 
-
   // =====================================================
   // FORMULÁRIO PÚBLICO
   // =====================================================
 
   return (
     <>
-
       <main className="min-h-screen bg-slate-950 py-10 px-4 text-slate-800 font-sans">
 
         <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-800">
@@ -356,7 +326,6 @@ export default function Formulario3HC() {
             onIdiomaChange={alterarIdioma}
           />
 
-
           {/* =================================================
               FORMULÁRIO
           ================================================= */}
@@ -366,7 +335,9 @@ export default function Formulario3HC() {
             className="p-6 sm:p-8 space-y-8"
           >
 
-            {/* PERFIL */}
+            {/* =================================================
+                PERFIL
+            ================================================= */}
 
             <PerfilVisitante
               formData={formData}
@@ -374,8 +345,9 @@ export default function Formulario3HC() {
               idioma={idioma}
             />
 
-
-            {/* NECESSIDADES */}
+            {/* =================================================
+                NECESSIDADES
+            ================================================= */}
 
             <PerfilNecessidades
               formData={formData}
@@ -384,8 +356,9 @@ export default function Formulario3HC() {
               idioma={idioma}
             />
 
-
-            {/* OPORTUNIDADES */}
+            {/* =================================================
+                OPORTUNIDADES
+            ================================================= */}
 
             <ConexaoOportunidades
               formData={formData}
@@ -393,11 +366,11 @@ export default function Formulario3HC() {
               idioma={idioma}
             />
 
-
-            {/* ERRO */}
+            {/* =================================================
+                ERRO
+            ================================================= */}
 
             {erro && (
-
               <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-700">
 
                 <strong className="block mb-1">
@@ -409,11 +382,11 @@ export default function Formulario3HC() {
                 </span>
 
               </div>
-
             )}
 
-
-            {/* ENVIAR */}
+            {/* =================================================
+                ENVIAR
+            ================================================= */}
 
             <button
               type="submit"
@@ -443,15 +416,14 @@ export default function Formulario3HC() {
                 tracking-wider
               "
             >
-
               {enviando
                 ? t.enviando
                 : t.enviar}
-
             </button>
 
-
-            {/* PRIVACIDADE */}
+            {/* =================================================
+                PRIVACIDADE
+            ================================================= */}
 
             <p className="text-center text-xs text-slate-400">
               {t.privacidade}
@@ -463,22 +435,17 @@ export default function Formulario3HC() {
 
       </main>
 
-
-      {/* =================================================
+      {/* =====================================================
           LOGIN PRIVADO
-      ================================================= */}
+      ===================================================== */}
 
       {mostrarLogin && (
-
         <LoginPrivado
           onClose={fecharPrivado}
           onSuccess={loginSucesso}
           idioma={idioma}
         />
-
       )}
-
     </>
   );
 }
-
